@@ -4,7 +4,7 @@ use glam::{DMat4, Mat4};
 pub trait FromRow<T> {
     // from_cols_array_2d
     fn from_rows_array_2d(m: &[[T; 4]; 4]) -> Self;
-    
+
     fn to_rows_array_2d(&self) -> [[T; 4]; 4];
 }
 
@@ -15,7 +15,7 @@ impl FromRow<f32> for Mat4 {
     fn from_rows_array_2d(m: &[[f32; 4]; 4]) -> Self {
         Self::from_cols_array_2d(m).transpose()
     }
-    
+
     /// Default method of `numpy` expects row-major
     /// Transposes and then calls the [`Mat4::to_cols_array_2d()`] to get the row-major.
     fn to_rows_array_2d(&self) -> [[f32; 4]; 4] {
@@ -40,8 +40,8 @@ impl FromRow<f64> for DMat4 {
 
 #[cfg(test)]
 mod test {
-    use crate::util::FromRow;
-    use glam::{Mat4, Vec4, EulerRot, DMat4, DVec3, DMat3};
+    use crate::matrices::FromRow;
+    use glam::{Mat4, Vec4};
     use inline_python::{python, Context};
 
     #[test]
@@ -90,5 +90,4 @@ mod test {
         assert_eq!(expected, py_result);
         assert_eq!(py_result, m4_1.mul_mat4(&m4_2),);
     }
-
 }

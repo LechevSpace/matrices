@@ -38,11 +38,11 @@ pub enum Axes {
 
 #[cfg(test)]
 mod test {
-    use glam::{DMat4, DVec3, EulerRot, Mat4};
+    use glam::{DMat4, EulerRot, Mat4};
     use inline_python::{python, Context};
 
-    use super::{Axes, euler_matrix};
-    use crate::{ util::FromRow, transformation::euler_matrix_f32};
+    use super::{Axes, euler_matrix, euler_matrix_f32};
+    use crate::matrices::FromRow;
 
     #[test]
     fn test_euler_matrix() {
@@ -86,25 +86,21 @@ mod test {
         
         // assert_relative_eq!(actual_rotational_f32,epsilon = f64::EPSILON);
 
-        // very close, but not equal due to float numbers
-        pretty_assertions::assert_eq!(
-            actual_rotational_f32,
-            euler_matrix_rotational_f32,
-            "Glam uses rotational from transformation by default"
-        );
         
         // very close, but not equal due to float numbers
-        pretty_assertions::assert_eq!(
-            euler_matrix(1.0_f64, 2.0_f64, 3.0_f64, Axes::Rotational(EulerRot::XYZ)),
-            euler_matrix_rotational,
+        // TODO: Check if this is the right value for abs. diff for floating number comparison
+        assert!(
+            actual_rotational_f32.abs_diff_eq(euler_matrix_rotational_f32, 0.000_001),
             "Glam uses rotational from transformation by default"
         );
 
-        pretty_assertions::assert_eq!(
-            DMat4::from_scale(DVec3::new(1.0, 2.0, 3.0)),
-            euler_matrix_rotational,
-            "does not match with from_scale"
+        let actual_euler_matrix_rotational = euler_matrix(1.0_f64, 2.0_f64, 3.0_f64, Axes::Rotational(EulerRot::XYZ));
+        
+        // very close, but not equal due to float numbers
+        // TODO: Check if this is the right value for abs. diff for floating number comparison
+        assert!(
+            actual_euler_matrix_rotational.abs_diff_eq(euler_matrix_rotational, 0.000_000_000_000_001),
+            "Glam uses rotational from transformation by default"
         );
-
     }
 }

@@ -1,0 +1,6 @@
+[toolchain]
+# we use nightly because of the `proc_macro_span` feature being unstable and used in inline-python
+channel = "nightly"
+# components = [ "rustfmt", "rustc-dev" ]
+# targets = [ "wasm32-unknown-unknown", "thumbv2-none-eabi" ]
+profile = "minimal"
