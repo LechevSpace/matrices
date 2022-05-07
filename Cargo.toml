@@ -2,13 +2,15 @@
 name = "matrices"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Lechev.space <dev@lechev.space>"]
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 glam = {version = "0.20", features = ["std", "debug-glam-assert", "glam-assert"]}
+once_cell = "1"
 
 [dev-dependencies]
 
 inline-python = "0.8"
+approx = "0.5"
 pretty_assertions = "1"

@@ -1,4 +1,8 @@
+//! Module containing extensions to [`glam`] matrices operations.
 use glam::{DMat4, Mat4};
+
+#[cfg(test)]
+pub use test_utils::FromPy;
 
 /// From row major
 pub trait FromRow<T> {
@@ -35,6 +39,39 @@ impl FromRow<f64> for DMat4 {
     /// Transposes and then calls the [`DMat4::to_cols_array_2d()`] to get the row-major.
     fn to_rows_array_2d(&self) -> [[f64; 4]; 4] {
         self.transpose().to_cols_array_2d()
+    }
+}
+
+#[cfg(test)]
+mod test_utils {
+    use glam::{DMat4, Mat4};
+    use inline_python::{pyo3::FromPyObject, Context};
+
+    use super::FromRow;
+
+    /// Helper trait to get value from Python for types that don't impl [`FromPyObject`]
+    /// and/or need additional transformations.
+    pub trait FromPy<T>
+    where
+        T: for<'source> FromPyObject<'source>,
+    {
+        fn try_get(context: &Context, name: &str) -> Self;
+    }
+
+    impl FromPy<[[f64; 4]; 4]> for DMat4 {
+        fn try_get(context: &Context, name: &str) -> Self {
+            let python_value = context.get::<[[f64; 4]; 4]>(name);
+
+            DMat4::from_rows_array_2d(&python_value)
+        }
+    }
+
+    impl FromPy<[[f32; 4]; 4]> for Mat4 {
+        fn try_get(context: &Context, name: &str) -> Self {
+            let python_value = context.get::<[[f32; 4]; 4]>(name);
+
+            Mat4::from_rows_array_2d(&python_value)
+        }
     }
 }
 
